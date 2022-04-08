@@ -1,0 +1,26 @@
+#VRML_SIM R2022a utf8
+WorldInfo {
+  basicTimeStep 16
+}
+Viewpoint {
+  orientation 0 1 0 1.5707996938995747
+  position 0 0 2
+  follow "e-puck"
+  followType "None"
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+}
+E-puck {
+  controller "controller"
+  supervisor TRUE
+  groundSensorsSlot [
+    GPS {
+      translation -0.03 0 0
+      accuracy 0.01
+    }
+  ]
+}
