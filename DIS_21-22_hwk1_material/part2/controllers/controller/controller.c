@@ -24,7 +24,7 @@
 /*NAVIGATION OPTION*/
 enum NavTypes {BRAITENBERG=0, STRAIGHT_LINE, CURVE, WAYPOINTS};
 //const static int nav = BRAITENBERG;   // Choose the type of navigation to perform 
-//const static int nav = STRAIGHT_LINE;
+//onst static int nav = STRAIGHT_LINE;
 const static int nav = WAYPOINTS;
 //const static int nav = CURVE;
 
@@ -38,6 +38,7 @@ const static int nav = WAYPOINTS;
 #define VERBOSE_ACC_MEAN      false   // Print mean accelerometer values 
 #define VERBOSE_GYRO          false   // Print gyroscope values 
 #define VERBOSE_GPS           false   // Print gps values 
+#define VERBOSE_BRAITENBERG   false    // Print correction if symmetry is detected
 
 /*KALMAN FILTER FLAGS*/
 #define FUSE_GYRO             false    // Fuse the gyroscope data 
@@ -55,6 +56,12 @@ const static int nav = WAYPOINTS;
 /*CONSTANTS*/
 #define MAX_SPEED_WEB 6.279     // Maximum speed webots
 #define MAX_DIST_RESP 4095      // Maximum distance sensor response 
+
+/*BRAITENBERG CONTROLLER*/
+#define IR_SENSOR_THRESHOLD 80
+#define INITIAL_SPEED 3.0
+#define IR_SENSOR_BRAKE_SYMMETRY 90
+#define BRAKE_SYMMETRY 2.0
 
 //-----------------------------------------------------------------------------------//
 /*DEFINITIONS*/
@@ -366,25 +373,39 @@ void controller_set_speed(){
       const double l_weight[NB_SENSORS] = {-0.035, -0.05, -0.03, 0.025, 0.025, 0.03, 0.05, 0.035};
       const double r_weight[NB_SENSORS] = {0.035, 0.05, 0.03, 0.025, 0.025, -0.03, -0.05, -0.035};
       
-      double left_speed = 0.0;
-      double right_speed = 0.0;
+      double left_speed = INITIAL_SPEED;
+      double right_speed = INITIAL_SPEED;
+      static double left_correction = 0;
+      static double right_correction = 0;
+           
       for (int i = 0; i < NB_SENSORS; i++)
       {
-        left_speed += l_weight[i]*_meas.ds_values[i];
-        right_speed += r_weight[i]*_meas.ds_values[i];
+        if(_meas.ds_values[i]>IR_SENSOR_THRESHOLD)
+        {
+          left_speed += l_weight[i]*_meas.ds_values[i];
+          right_speed += r_weight[i]*_meas.ds_values[i];
+        }
       }
       
-      if(left_speed>MAX_SPEED_WEB && right_speed>MAX_SPEED_WEB)
+      if(_meas.ds_values[0]>IR_SENSOR_BRAKE_SYMMETRY && _meas.ds_values[7]>IR_SENSOR_BRAKE_SYMMETRY)
       {
-        left_speed -= 0.5;
-        right_speed += 0.5;
-        printf("correction necessary");
-        printf("left speed = %f, right speed = %f\n", left_speed, right_speed);
+        left_correction -= BRAKE_SYMMETRY;
+        right_correction += BRAKE_SYMMETRY;
+        
+        if(VERBOSE_BRAITENBERG)
+        {
+          printf("correction necessary");
+          printf("left speed = %f, right speed = %f\n", left_speed, right_speed);
+        }
       }
-   
+      else
+      {
+        left_correction = left_correction/2;
+        right_correction = right_correction/2;
+      }
       
-      msl_w =  left_speed; // left  wheel velocity in rad/s
-      msr_w =  right_speed; // right wheel velocity in rad/s
+      msl_w =  left_speed + left_correction; // left  wheel velocity in rad/s
+      msr_w =  right_speed + right_correction; // right wheel velocity in rad/s
     }
     break;
   

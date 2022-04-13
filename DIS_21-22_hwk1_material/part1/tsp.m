@@ -94,13 +94,13 @@ for K=1:ntours % number of tours is like the number of iterations
     %%<<<<<<<<--------------- YOUR CODE HERE----------->>>>>>>
     % Make the values of alpha and beta change linearly with time
     % The more time passes, the more the ant should rely on pheromones
-    alpha = (K/ntours)*A + 5;
-    beta = ((ntours-K)/ntours)*B + 5;
+    alpha = 2*(K/ntours)*A;
+    beta = 2*((ntours-K)/ntours)*B;
 
 
-    % Pheromone evaporation of 10% at each iteration
+    %Pheromone evaporation of 10% at each iteration
     if(K~=1)
-        pheromonetrail = pheromonetrail*0.9;
+        pheromonetrail = pheromonetrail.*0.9;
     end
     
     %%<<<<<<<<---------------------------------------->>>>>>>
@@ -201,16 +201,10 @@ while(run)
                 % calc. fitness of new solution
                 opt_fitness = fitness(opt_solution,distance_matrix);
                 
-                % To do: Check if the newly found solution is better.               
-                better_fitness_found = false;
-                if(opt_fitness < best_fitness_yet)
-                    better_fitness_found = true;
-                end               
-                
-                if (better_fitness_found)
+                % To do: Check if the newly found solution is better.                               
+                if (opt_fitness < best_fitness_yet)
                     % To do: Update solution, and store new better fitness score.
                     solution = opt_solution;
-                    best_solution_yet = opt_solution;
                     best_fitness_yet = opt_fitness;
                     
                     % Leave the next three lines as they are

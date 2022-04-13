@@ -8,12 +8,8 @@ for i = 1:runs
 end
 %% <<<<<<-------------------- YOUR CODE HERE ---------------->>>>>>
 % Implement mean and standard deviation of the runs
-
-% Question: what is fit_2opt_vector???
-
 fit_mean = mean(fit_vector)
 fit_std = std(fit_vector)
-
 
 %% <<<<<<---------------------------------------------------->>>>>>
 
