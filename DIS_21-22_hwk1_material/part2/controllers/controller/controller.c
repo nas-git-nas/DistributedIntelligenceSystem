@@ -24,8 +24,8 @@
 /*NAVIGATION OPTION*/
 enum NavTypes {BRAITENBERG=0, STRAIGHT_LINE, CURVE, WAYPOINTS};
 //const static int nav = BRAITENBERG;   // Choose the type of navigation to perform 
-//onst static int nav = STRAIGHT_LINE;
-const static int nav = WAYPOINTS;
+const static int nav = STRAIGHT_LINE;
+//const static int nav = WAYPOINTS;
 //const static int nav = CURVE;
 
 /*ACCELEROMETER CALIBRATION*/

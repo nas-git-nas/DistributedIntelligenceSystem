@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------------------//
 
 /*VERBOSE_FLAGS*/
-#define VERBOSE_ODO_ACC 	true		// Print odometry values computed with accelerometer 
+#define VERBOSE_ODO_ACC 	false		// Print odometry values computed with accelerometer 
 #define VERBOSE_ODO_GYRO 	false		// Print odometry values computed with gyroscope  
 #define VERBOSE_ODO_ENC 	false     	// Print odometry values computed with wheel encoders 
 //-----------------------------------------------------------------------------------//
