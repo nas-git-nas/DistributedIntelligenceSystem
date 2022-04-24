@@ -93,7 +93,7 @@ void kal_predict(pose_t* odo, double* acc, double* acc_mean){
     // Hint: use the type VecX 
     
     double ax = cos(odo->heading)*(acc[0]-acc_mean[0]) - sin(odo->heading)*(acc[1]-acc_mean[1]);
-    double ay = sin(odo->heading)*(acc[0])-acc_mean[0] + cos(odo->heading)*(acc[1]-acc_mean[1]);
+    double ay = sin(odo->heading)*(acc[0]-acc_mean[0]) + cos(odo->heading)*(acc[1]-acc_mean[1]);
     // When doing the straight line test (with initial heading -135), it actually works better without de-biasing
     VecX u {{ax},
             {ay}};
@@ -135,15 +135,19 @@ void kal_update(VecX z, MatX C, MatX Q){
 
     ///********* Kalman gain *********//
 	// To Do : Compute the Kalman gain K = Σ*C^T*(C*Σ*C^T + Q)⁻¹
+	
+    MatX K = sigma*C.transpose()*(C*sigma*C.transpose() + Q).inverse();
     
     
     ///********* Update state mu *********//
     // To Do : Compute the state update μ = μ + K*(z - C*μ)
     
+    mu = mu + K*(z - C*mu);    
 
     ///********* Update state covariance sigma *********//
     // To Do : Compute the state covariance update Σ = (I - K*C)*Σ
     
+    sigma = (I - K*C)*sigma;
 
     kal_check_nan();
 }
@@ -151,16 +155,17 @@ void kal_update(VecX z, MatX C, MatX Q){
 void kal_update_gyro(pose_t* odo, double* gyro){
     
     // To Do : Declare and initialize the measurement vector z (use VecX type)
-    
+    VecX z {{gyro[2]}};
 
     // To Do : Declare the matrix C (use MatX type)
-    
+    MatX C {{0, 0, 0, 0, 0, 1}};
 
     // To Do : Declare the matrix Q (use MatX type)
-    
+    double std = 6.77e-4;
+    MatX Q {{std*std}};
 
     // To Do : Call kal_update 
-    
+    kal_update(z, C, Q);
 
     // write result back to struct
 	odo->x = mu(0);
@@ -173,15 +178,44 @@ void kal_update_gyro(pose_t* odo, double* gyro){
 void kal_update_enc(pose_t* odo, double Aleft_enc, double Aright_enc)
 {
 	// To Do : Declare and initialize the measurement vector z (use VecX type)
+	
+    // While this makes sense in principle, it doesn't seem to make a difference in practice
+    /**
+    if (Aleft_enc > 6)
+      Aleft_enc -= 2*M_PI;
+    else if (Aleft_enc < -6)
+      Aleft_enc += 2*M_PI;
+      
+     if (Aright_enc > 6)
+      Aright_enc -= 2*M_PI;
+    else if (Aright_enc < -6)
+      Aright_enc += 2*M_PI;
+    */
     
-
+    double vh = (WHEEL_RADIUS/WHEEL_AXIS)*(Aright_enc-Aleft_enc)/_T;
+    double vx = (WHEEL_RADIUS/2)*(Aleft_enc+Aright_enc)*cos(odo->heading + vh*_T/2)/_T;
+    double vy = (WHEEL_RADIUS/2)*(Aleft_enc+Aright_enc)*sin(odo->heading + vh*_T/2)/_T;
+      	
+    VecX z {{vx},
+            {vy},
+            {vh}};
+            
     // To Do : Declare the matrix C (use MatX type)
-    
+    MatX  C {{0, 0, 0, 1, 0, 0},
+             {0, 0, 0, 0, 1, 0},
+             {0, 0, 0, 0, 0, 1}};
 
     // To Do : Declare the matrix Q (use MatX type)
+    double std_x = 6.108e-3;
+    double std_y = 7.095e-3;
+    double std_h = 9.3858e-2;
     
+    MatX Q {{std_x*std_x, 0, 0},
+            {0, std_y*std_y, 0},
+            {0, 0, std_h*std_h}};
 
-    // To Do : Call kal_update 
+    // To Do : Call kal_update
+    kal_update(z, C, Q);
 
 
     // write result back to struct
@@ -195,16 +229,19 @@ void kal_update_enc(pose_t* odo, double Aleft_enc, double Aright_enc)
 void kal_update_gps(pose_t* odo, double* gps){
 
     // To Do : Declare and initialize the measurement vector z (use VecX type)
-    
+    VecX z {{gps[0]},
+            {gps[1]}};
 
     // To Do : Declare the matrix C (use MatX type)
-    
+    MatX  C {{1, 0, 0, 0, 0, 0},
+             {0, 1, 0, 0, 0, 0}};
 
     // To Do : Declare the matrix Q (use MatX type)
-    
+    MatX Q {{0.01*0.01, 0},
+            {0, 0.01*0.01}};
 
     // To Do : Call kal_update 
-    
+    kal_update(z, C, Q);
 
     // write result back to struct
 	odo->x = mu(0);

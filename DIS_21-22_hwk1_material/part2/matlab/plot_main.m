@@ -56,11 +56,21 @@ legend({'ground truth','gyroscope','encoders'})
 
 % To Do : Using data.gt_heading, compute the ground truth for the body rate 
 % Hint: pay attention to the length of the vector, see plot below  
-vel_grt_h = [];
+vel_grt_h = zeros(length(data.gt_heading)-1, 1);
+for i = 1:length(vel_grt_h)-1
+    if (data.gt_heading(i+1) < -3) && (data.gt_heading(i) > 3)
+        vel_grt_h(i) = (data.gt_heading(i+1)+2*pi-data.gt_heading(i))/T;
+    elseif (data.gt_heading(i+1) > 3) && (data.gt_heading(i) < -3)
+        vel_grt_h(i) = (data.gt_heading(i+1)-2*pi-data.gt_heading(i))/T;
+    else
+        vel_grt_h(i) = (data.gt_heading(i+1)-data.gt_heading(i))/T;
+    end
+end
 
 % To Do : using vel_grt_h and data.gyro_z, compute the standard
 % deviation of the heading
-gyro_std = 0;
+err = vel_grt_h - data.gyro_z(2:end);
+gyro_std = std(err);
 
 fprintf("Gyro std in z: %f [rad/s] \n",gyro_std)
 
@@ -78,31 +88,60 @@ ylabel('[rad/s]')
 [~, ~, dt, data] = read_log();
 
 % To Do : Compute the velocity in x for the ground truth and the encoders
-% Use data.gt_x and data.odo_enc_x and the timestep dt 
-vel_grt_x = [];
-vel_enc_x = [];
+% Use data.gt_x and data.odo_enc_x and the timestep dt
+nb_samples = length(data.gt_x);
+vel_grt_x = zeros(nb_samples-1, 1);
+vel_enc_x = zeros(nb_samples-1, 1);
+for i = 1:nb_samples-1
+    vel_grt_x(i) = (data.gt_x(i+1)-data.gt_x(i))/dt;
+    vel_enc_x(i) = (data.odo_enc_x(i+1)-data.odo_enc_x(i))/dt;
+end
 
 % To Do : Compute the encoders' std in x, using vel_grt_x and vel_enc_x
-enc_std_x = 0;
+enc_std_x = std(vel_enc_x-vel_grt_x);
 
 % To Do : Compute the velocity in y for the ground truth and the encoders
 % Use data.gt_y and data.odo_enc_y and the timestep dt 
-vel_grt_y = [];
-vel_enc_y = [];
+vel_grt_y = zeros(nb_samples-1, 1);
+vel_enc_y = zeros(nb_samples-1, 1);
+for i = 1:nb_samples-1
+    vel_grt_y(i) = (data.gt_y(i+1)-data.gt_y(i))/dt;
+    vel_enc_y(i) = (data.odo_enc_y(i+1)-data.odo_enc_y(i))/dt;
+end
 
 % To Do : Compute the encoders' std in y, using vel_grt_y and vel_enc_y
-enc_std_y = 0;
+enc_std_y = std(vel_enc_y-vel_grt_y);
 
 % To Do : Compute the heading velocity for the ground truth and the encoders
 % Use data.gt_heading and data.odo_enc_heading and the timestep dt 
-vel_grt_h = [];
-vel_enc_h = [];
+vel_grt_h = zeros(nb_samples-1, 1);
+for i = 1:nb_samples-1
+    if (data.gt_heading(i+1) < -3) && (data.gt_heading(i) > 3)
+        vel_grt_h(i) = (data.gt_heading(i+1)+2*pi-data.gt_heading(i))/dt;
+    elseif (data.gt_heading(i+1) > 3) && (data.gt_heading(i) < -3)
+        vel_grt_h(i) = (data.gt_heading(i+1)-2*pi-data.gt_heading(i))/dt;
+    else
+        vel_grt_h(i) = (data.gt_heading(i+1)-data.gt_heading(i))/dt;
+    end
+end
+
+vel_enc_h = zeros(nb_samples-1, 1);
+for i = 1:nb_samples-1
+    if (data.odo_enc_heading(i+1) < -3) && (data.odo_enc_heading(i) > 3)
+        vel_enc_h(i) = (data.odo_enc_heading(i+1)+2*pi-data.odo_enc_heading(i))/dt;
+    elseif (data.odo_enc_heading(i+1) > 3) && (data.odo_enc_heading(i) < -3)
+        vel_enc_h(i) = (data.odo_enc_heading(i+1)-2*pi-data.odo_enc_heading(i))/dt;
+    else
+        vel_enc_h(i) = (data.odo_enc_heading(i+1)-data.odo_enc_heading(i))/dt;
+    end
+end
 
 % To Do : Remove possible outliers (excessive values) in the data 
-
+% Already taken care of. Outliers in the heading rate occur because
+% headings are constrained in the range [-pi, pi]
 
 % To Do : Compute the encoders' std in heading, using vel_grt_h and vel_enc_h
-enc_std_h = 0;
+enc_std_h = std(vel_enc_h-vel_grt_h);
 
 fprintf("Encoder velocity std in x,y: %f, %f [m] \n",enc_std_x,enc_std_y)
 fprintf("Encoder velocity std heading: %f [rad/s] \n",enc_std_h)

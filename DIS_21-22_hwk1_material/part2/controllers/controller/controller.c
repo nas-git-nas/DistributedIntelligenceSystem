@@ -24,8 +24,8 @@
 /*NAVIGATION OPTION*/
 enum NavTypes {BRAITENBERG=0, STRAIGHT_LINE, CURVE, WAYPOINTS};
 //const static int nav = BRAITENBERG;   // Choose the type of navigation to perform 
-const static int nav = STRAIGHT_LINE;
-//const static int nav = WAYPOINTS;
+//const static int nav = STRAIGHT_LINE;
+const static int nav = WAYPOINTS;
 //const static int nav = CURVE;
 
 /*ACCELEROMETER CALIBRATION*/
@@ -41,9 +41,9 @@ const static int nav = STRAIGHT_LINE;
 #define VERBOSE_BRAITENBERG   false    // Print correction if symmetry is detected
 
 /*KALMAN FILTER FLAGS*/
-#define FUSE_GYRO             false    // Fuse the gyroscope data 
-#define FUSE_ENC              false    // Fuse the encoder data 
-#define FUSE_GPS              false    // Fuse the gps data 
+#define FUSE_GYRO             true    // Fuse the gyroscope data 
+#define FUSE_ENC              true    // Fuse the encoder data 
+#define FUSE_GPS              true    // Fuse the gps data 
 //-----------------------------------------------------------------------------------//
 
 /*MACRO*/
@@ -322,10 +322,11 @@ void controller_get_gps(){
   
   // To Do : Call the function wb_gps_get_values to get the gps measurements. 
   // Uncomment and complete the following line. Note : Use _robot.gps
-  //const double * gps_values = ...
+  const double * gps_values = wb_gps_get_values(_robot.gps);
+
 
   // To Do : Copy the gps_values into the measurment structure _meas.gps (use memcpy)
-  
+  memcpy(_meas.gps, gps_values, sizeof(_meas.gps));
 
   if(VERBOSE_GPS)
     printf("ROBOT gps : %.3lf %.3lf %.3lf [m]\n", _meas.gps[0], _meas.gps[1] , _meas.gps[2]);
