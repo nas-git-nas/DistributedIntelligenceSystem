@@ -1,0 +1,99 @@
+#VRML_SIM R2022a utf8
+WorldInfo {
+  basicTimeStep 16
+}
+Viewpoint {
+  orientation 0 1 0 1.5707996938995747
+  position 0 0 2
+  follow "e-puck"
+  followType "None"
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+}
+Solid {
+  translation 0.18 -0.15 0.05
+  children [
+    DEF OBSTACLE_SHAPE Shape {
+      appearance PBRAppearance {
+        baseColor 0.960784 0.47451 0
+        roughness 1
+        metalness 0
+      }
+      geometry Cylinder {
+        height 0.1
+        radius 0.05
+        subdivision 10
+      }
+    }
+  ]
+  name "obstacle"
+  boundingObject USE OBSTACLE_SHAPE
+}
+Solid {
+  translation 0.282775 0.255 0.05
+  rotation 0 0 1 0.523599
+  children [
+    USE OBSTACLE_SHAPE
+  ]
+  name "obstacle(1)"
+  boundingObject USE OBSTACLE_SHAPE
+}
+Solid {
+  translation -0.288792 -0.075 0.05
+  rotation 0 0 1 -0.261795307179586
+  children [
+    USE OBSTACLE_SHAPE
+  ]
+  name "obstacle(2)"
+  boundingObject USE OBSTACLE_SHAPE
+}
+Solid {
+  translation -0.00626342 -0.324652 0.05
+  rotation 0 0 1 0.261803
+  children [
+    USE OBSTACLE_SHAPE
+  ]
+  name "obstacle(3)"
+  boundingObject USE OBSTACLE_SHAPE
+}
+Solid {
+  translation -0.00422625 0.131405 0.05
+  rotation 0 0 1 0.261803
+  children [
+    USE OBSTACLE_SHAPE
+  ]
+  name "obstacle(4)"
+  boundingObject USE OBSTACLE_SHAPE
+}
+Solid {
+  translation -0.249168 0.272824 0.05
+  rotation 0 0 1 0.261803
+  children [
+    USE OBSTACLE_SHAPE
+  ]
+  name "obstacle(5)"
+  boundingObject USE OBSTACLE_SHAPE
+}
+Solid {
+  translation 0.302324 -0.355851 0.05
+  rotation 0 0 1 0.261803
+  children [
+    USE OBSTACLE_SHAPE
+  ]
+  name "obstacle(6)"
+  boundingObject USE OBSTACLE_SHAPE
+}
+E-puck {
+  controller "controller"
+  supervisor TRUE
+  groundSensorsSlot [
+    GPS {
+      translation -0.03 0 0
+      accuracy 0.01
+    }
+  ]
+}
