@@ -7,7 +7,7 @@
 #include <webots/receiver.h>
 #include <webots/supervisor.h>
 
-#define ROBOTS 2
+#define ROBOTS MAX_ROB
 #define MAX_ROB 2
 #define ROB_RAD 0.035
 #define ARENA_SIZE .15
@@ -104,7 +104,7 @@ int main() {
     printf("Particle Swarm Optimization Super Controller\n");
     reset();
     for (i=0;i<MAX_ROB;i++)
-    wb_receiver_enable(rec[i],32);
+    wb_receiver_enable(rec[i],32);//starts the receiver listening for incoming data packetss, at a rate of once every 32 ms
 
     wb_robot_step(256);
 
@@ -214,12 +214,17 @@ void calc_fitness(double weights[ROBOTS][DATASIZE], double fit[ROBOTS], int its,
     /* Receive fitness messages from robots */
     for (i=0;i<MAX_ROB;i++) {
         rbuffer = (double *)wb_receiver_get_data(rec[i]);
+        //printf("Robot %d: %f\n",i, rbuffer[0]);
+        //fit[i] = rbuffer[0];
         wb_receiver_next_packet(rec[i]);
+        
     }
     // TODO : Q 2.8 complete the function below to calculate the fitness 
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    fit[0] = rnd()*5.;
-    fit[1] = fit[0];
+       fit[0] = (loc[0][0]-new_loc[0][0])*(loc[0][0]-new_loc[0][0]) + 
+                (loc[0][1]-new_loc[0][1])*(loc[0][1]-new_loc[0][1]);
+       fit[1] = (loc[1][0]-new_loc[1][0])*(loc[1][0]-new_loc[1][0]) + 
+                (loc[1][1]-new_loc[1][1])*(loc[1][1]-new_loc[1][1]);
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   sprintf(label,"Last fitness: %.3f\n",fit[0]);

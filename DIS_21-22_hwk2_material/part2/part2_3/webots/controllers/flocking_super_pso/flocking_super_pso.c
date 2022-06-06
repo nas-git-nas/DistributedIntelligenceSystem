@@ -49,7 +49,14 @@ int curr_dest = 0;
  * Multi migration targets for single flock case
  */
 void update_migration(){
-	
+  
+	static bool init = 1;
+	if (init){
+        	  migrx = (float)rand()/RAND_MAX*4 - 2;
+        	  migry = (float)rand()/RAND_MAX*6 - 3;
+        	  init = 0;
+        	}
+
 	double center[2] = {0.,0.}; // flock center 
 
 	for (int i=0;i<FLOCK_SIZE;i++) {
@@ -61,6 +68,8 @@ void update_migration(){
 	if(distance < .3){
 		printf("Reached destination %d\n",curr_dest);
 		curr_dest++;
+		migrx = (float)rand()/RAND_MAX*4 - 2;
+          	           migry = (float)rand()/RAND_MAX*6 - 3;
 	}
 	if(curr_dest >= num_destination){
 		printf("All destinations are reached, stopping simulation\n"); 
@@ -68,8 +77,8 @@ void update_migration(){
 	}
 	//printf("dist: %.2lf, migrx:%.2lf,migry:%.2lf,centery:%.2lf,centery:%.2lf,curr_dest:%d\n",distance,migrx, migry, center[0],center[1],curr_dest);
 
-	migrx = destinations[curr_dest][0];
-	migry = destinations[curr_dest][1];
+	//migrx = destinations[curr_dest][0];
+	//migry = destinations[curr_dest][1];
 
 	WbNodeRef mig_target = wb_supervisor_node_get_from_def("migration_target");
 	if(mig_target == NULL) return;
@@ -84,6 +93,7 @@ void update_migration(){
 void reset(void) {
 
 	wb_robot_init();
+	srand(time(NULL));
 
 	emitter_loc = wb_robot_get_device("emitter_loc");
 	if (emitter_loc==0) printf("missing emitter_loc\n");

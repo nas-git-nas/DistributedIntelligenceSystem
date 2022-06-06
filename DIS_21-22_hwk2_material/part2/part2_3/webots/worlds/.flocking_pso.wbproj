@@ -5,7 +5,10 @@ sceneTreePerspectives: 000000ff0000000100000002000000c0000000fa01000000020100000
 maximizedDockId: -1
 centralWidgetVisible: 1
 orthographicViewHeight: 1
-textFiles: 0 "../../part2_3/webots/controllers/flock_param.h"
+textFiles: 2 "controllers/flock_param.h" "controllers/collective_pso/collective_pso.c" "controllers/flocking_super_pso/flocking_super_pso.c"
 consoles: Console:All:All
-renderingDevicePerspectives: e-puck_0:camera;1;1;0;0
-renderingDevicePerspectives: e-puck_1:camera;1;1;0;0
+renderingDevicePerspectives: epuck0:camera;1;1;0;0
+renderingDevicePerspectives: epuck1:camera;1;1;0;0
+renderingDevicePerspectives: epuck2:camera;1;1;0;0
+renderingDevicePerspectives: epuck3:camera;1;1;0;0
+renderingDevicePerspectives: epuck4:camera;1;1;0;0

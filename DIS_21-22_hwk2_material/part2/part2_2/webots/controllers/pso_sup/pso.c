@@ -23,7 +23,7 @@
 #else
 // TODO : Q 2.9 implement noise-resistant PSO
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#define ITS_COEFF 1.0     // Multiplier for number of iterations
+#define ITS_COEFF 2.0     // Multiplier for number of iterations
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 #endif
@@ -131,6 +131,8 @@ double* pso(int n_swarmsize, int n_nb, double lweight, double nbweight, double v
 
     // TODO : Q 2.9 implement noise-resistant PSO
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    if (NOISY)
+      findPerformance(lbest, lbestperf, lbestage, EVOLVE_AVG, robots, neighbors);
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     // Find new performance

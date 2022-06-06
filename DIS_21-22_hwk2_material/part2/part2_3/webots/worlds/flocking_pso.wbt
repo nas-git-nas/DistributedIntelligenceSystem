@@ -622,6 +622,11 @@ DEF epuck0 E-puck {
   controller "collective_pso"
   emitter_channel 0
   receiver_channel 0
+  turretSlot [
+    Receiver {
+      channel 1
+    }
+  ]
   groundSensorsSlot [
     GPS {
       translation -0.03 0 0
@@ -635,6 +640,11 @@ DEF epuck1 E-puck {
   controller "collective_pso"
   emitter_channel 0
   receiver_channel 0
+  turretSlot [
+    Receiver {
+      channel 1
+    }
+  ]
   groundSensorsSlot [
     GPS {
       translation -0.03 0 0
@@ -648,6 +658,11 @@ DEF epuck2 E-puck {
   controller "collective_pso"
   emitter_channel 0
   receiver_channel 0
+  turretSlot [
+    Receiver {
+      channel 1
+    }
+  ]
   groundSensorsSlot [
     GPS {
       translation -0.03 0 0
@@ -661,6 +676,11 @@ DEF epuck3 E-puck {
   controller "collective_pso"
   emitter_channel 0
   receiver_channel 0
+  turretSlot [
+    Receiver {
+      channel 1
+    }
+  ]
   groundSensorsSlot [
     GPS {
       translation -0.03 0 0
@@ -674,6 +694,11 @@ DEF epuck4 E-puck {
   controller "collective_pso"
   emitter_channel 0
   receiver_channel 0
+  turretSlot [
+    Receiver {
+      channel 1
+    }
+  ]
   groundSensorsSlot [
     GPS {
       translation -0.03 0 0
@@ -682,6 +707,9 @@ DEF epuck4 E-puck {
 }
 Robot {
   children [
+    Emitter {
+      channel 1
+    }
     Emitter {
       name "emitter_loc"
     }
